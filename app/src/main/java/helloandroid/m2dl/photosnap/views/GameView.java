@@ -88,7 +88,6 @@ public class GameView extends View {
         canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
 
         for (Obstacle obstacle : obstacles) {
-            System.out.println(obstacle.getRect());
             canvas.drawRect(obstacle.getRect(), obstacle.getPaint());
         }
     }

@@ -2,4 +2,6 @@
     <string name="app_name">PhotoSnap</string>
     <string name="welcome_to_photosnap">Welcome to PhotoSnap !</string>
     <string name="rules">Rules</string>
+    <string name="begin">Begin</string>
+    <string name="you_can_go_to_the_next_level">You can go to the next level !</string>
 </resources>

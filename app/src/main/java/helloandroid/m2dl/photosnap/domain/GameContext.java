@@ -11,15 +11,19 @@ public class GameContext {
 
     private List<Obstacle> obstacles = new ArrayList<>();
 
-    public GameContext(Ball ball, Exit exit) {
+    private int difficulty;
+
+    public GameContext(Ball ball, Exit exit, int difficulty) {
         this.ball = ball;
         this.exit = exit;
+        this.difficulty = difficulty;
     }
 
-    public GameContext(Ball ball, Exit exit, List<Obstacle> obstacles) {
+    public GameContext(Ball ball, Exit exit, List<Obstacle> obstacles, int difficulty) {
         this.ball = ball;
         this.exit = exit;
         this.obstacles = obstacles;
+        this.difficulty = difficulty;
     }
 
     public Ball getBall() {
@@ -50,4 +54,11 @@ public class GameContext {
         this.obstacles.add(obstacle);
     }
 
+    public int getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+    }
 }

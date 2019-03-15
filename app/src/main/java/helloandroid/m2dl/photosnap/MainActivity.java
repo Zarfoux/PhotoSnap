@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
@@ -20,10 +19,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
 import helloandroid.m2dl.photosnap.delegates.GameDelegate;
+import helloandroid.m2dl.photosnap.domain.GameContext;
 import helloandroid.m2dl.photosnap.helpers.GameContextBuilder;
 import helloandroid.m2dl.photosnap.views.GameView;
 
@@ -40,6 +41,11 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
     private Bitmap bitmap;
+
+    private GameContext gameContext;
+
+    private ImageButton btnPicture;
+    private ImageButton btnRebuild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +70,34 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
             public void onGlobalLayout() {
                 gameView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 gameViewRect = new Rect(gameView.getLeft(), gameView.getTop(), gameView.getRight(), gameView.getBottom());
-                gameView.setGameContext(GameContextBuilder.buildGameContext(gameViewRect, 1,1));
+                gameContext = GameContextBuilder.buildGameContext(gameViewRect, 0,0);
+                gameView.setGameContext(gameContext);
                 gameView.invalidate();
             }
         });
 
-        onShowPopupMenu(mainView);
+        showPopupMenu(R.layout.menu_popup);
 
         imageView = findViewById(R.id.imageView);
+
+        btnPicture = findViewById(R.id.btn_pic);
+        btnRebuild = findViewById(R.id.btn_rebuild);
+
+        btnPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dispatchTakePictureIntent();
+            }
+        });
+
+        btnRebuild.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameContext = GameContextBuilder.buildGameContext(gameViewRect, gameContext.getDifficulty(), gameContext.getDifficulty());
+                gameView.setGameContext(gameContext);
+                gameView.invalidate();
+            }
+        });
     }
 
     private void dispatchTakePictureIntent() {
@@ -84,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            if (popWindow != null)
+                popWindow.dismiss();
+            popWindow = null;
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             bitmap = convertBitmap(imageBitmap);
@@ -91,9 +120,10 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
         }
     }
 
-    public static Bitmap convertBitmap(Bitmap src){
+    public Bitmap convertBitmap(Bitmap src){
         int width = src.getWidth();
         int height = src.getHeight();
+
         // create output bitmap
         Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
         // color information
@@ -126,11 +156,8 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
-        } else {
-            popWindow.dismiss();
-            popWindow = null;
-            dispatchTakePictureIntent();
         }
+        dispatchTakePictureIntent();
     }
 
     @Override
@@ -140,14 +167,33 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
         }
     }
 
-    public void onShowPopupMenu(View v) {
+    public void showPopupMenu(int resource) {
         LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View inflatedView = layoutInflater.inflate(R.layout.menu_popup, null,false);
+        final View inflatedView = layoutInflater.inflate(resource, null,false);
 
         popWindow = new PopupWindow(inflatedView, width - 256, height - 480, true);
 
         popWindow.setFocusable(true);
         popWindow.setOutsideTouchable(false);
+    }
+
+    @Override
+    public void onWin(GameContext gameContext) {
+        imageView.setImageBitmap(null);
+        int nextDifficulty = gameContext.getDifficulty() + 1;
+        this.gameContext = GameContextBuilder.buildGameContext(gameViewRect, nextDifficulty, nextDifficulty);
+        gameView.setGameContext(this.gameContext);
+        gameView.invalidate();
+
+        showPopupMenu(R.layout.win_popup);
+    }
+
+    @Override
+    public void onLose(GameContext gameContext) {
+        gameView.setGameContext(gameContext);
+        gameView.invalidate();
+
+        showPopupMenu(R.layout.lose_popup);
     }
 
 }

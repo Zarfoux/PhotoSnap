@@ -20,8 +20,8 @@ public class GameContextBuilder {
 
         Random rand = new Random();
 
-        Ball ball = new Ball(rand.nextInt(rect.right - 128 - borderWidth * 2) + rect.left + 64 + borderWidth, rand.nextInt(rect.bottom - 128 - borderWidth * 2) + rect.top + 64 + borderWidth, 64);
-        Square square = new Square(128, rand.nextInt(rect.right - 256 - borderWidth * 2) + rect.left + 128 + borderWidth, rand.nextInt(rect.bottom - 256 - borderWidth * 2) + rect.top + 128 + borderWidth);
+        Ball ball = new Ball(rand.nextInt(rect.right - 128 - borderWidth * 2) + rect.left + 64 + borderWidth, rand.nextInt(300) + rect.top + borderWidth + 64, 64);
+        Square square = new Square(128, rand.nextInt(rect.right - 256 - borderWidth * 2) + rect.left + 128 + borderWidth, rect.bottom - rand.nextInt(236) - borderWidth - 128);
         Exit exit = new Exit(square);
 
         List<Obstacle> obstacles = new ArrayList<>();
@@ -41,27 +41,65 @@ public class GameContextBuilder {
                 obstacles.add(new ObstacleBlock(bottomBorder));
                 break;
             case 2:
+                obstacles.add(new ObstacleBlock(topBorder));
+                obstacles.add(new ObstacleBlock(leftBorder));
+                obstacles.add(new ObstacleBlock(rightBorder));
+                obstacles.add(new ObstacleBlock(bottomBorder));
+                break;
+            default:
                 obstacles.add(new ObstacleDeath(topBorder));
                 obstacles.add(new ObstacleDeath(leftBorder));
                 obstacles.add(new ObstacleDeath(rightBorder));
                 obstacles.add(new ObstacleDeath(bottomBorder));
                 break;
-            default:
-                break;
         }
+
+        int width;
+        int height;
+        int left;
+        int top;
+
+        Rect randomBlockObstacle;
+        Rect randomDeathObstacle;
 
         switch (difficulty) {
             case 0:
                 break;
             case 1:
-                break;
-            case 2:
+                width = rand.nextInt(256) + 64;
+                height = rand.nextInt(256) + 64;
+
+                left = rand.nextInt(rect.right - width - borderWidth * 2) + rect.left + borderWidth;
+                top = rand.nextInt(rect.bottom - 760 - height) + 380 + rect.top;
+
+                randomBlockObstacle = new Rect(left, top, left + width, top + height);
+                obstacles.add(new ObstacleBlock(randomBlockObstacle));
                 break;
             default:
+                for (int i = 0; i < difficulty - 1; ++i) {
+                    width = rand.nextInt(256) + 64;
+                    height = rand.nextInt(256) + 64;
+
+                    left = rand.nextInt(rect.right - width - borderWidth * 2) + rect.left + borderWidth;
+                    top = rand.nextInt(rect.bottom - 760 - height) + 380 + rect.top;
+
+                    randomBlockObstacle = new Rect(left, top, left + width, top + height);
+                    obstacles.add(new ObstacleBlock(randomBlockObstacle));
+
+
+                    width = rand.nextInt(256) + 64;
+                    height = rand.nextInt(256) + 64;
+
+                    left = rand.nextInt(rect.right - width - borderWidth * 2) + rect.left + borderWidth;
+                    top = rand.nextInt(rect.bottom - 760 - height) + 380 + rect.top;
+
+                    randomDeathObstacle = new Rect(left, top, left + width, top + height);
+                    obstacles.add(new ObstacleDeath(randomDeathObstacle));
+                }
                 break;
         }
 
-        return new GameContext(ball, exit, obstacles);
+        return new GameContext(ball, exit, obstacles, difficulty);
     }
 
 }
