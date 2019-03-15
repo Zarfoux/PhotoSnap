@@ -1,17 +1,27 @@
 package helloandroid.m2dl.photosnap.domain;
 
+import android.graphics.Paint;
 import android.graphics.Rect;
+
+import helloandroid.m2dl.photosnap.helpers.Paints;
+import helloandroid.m2dl.photosnap.helpers.Square;
 
 public class Exit extends Entity {
 
-    private Rect rect;
+    private Square square;
 
-    public Rect getRect() {
-        return rect;
+    public Exit(Square square) {
+        super(Paints.getDefaultExitPaint());
+        this.square = square;
     }
 
-    public void setRect(Rect rect) {
-        this.rect = rect;
+    public Exit(Paint paint, Square square) {
+        super(paint);
+        this.square = square;
+    }
+
+    public Rect getRect() {
+        return square.getRect();
     }
 
 }
