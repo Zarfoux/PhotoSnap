@@ -50,7 +50,8 @@ public class GameView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        drawGameContext(canvas);
+        if (gameContext != null)
+            drawGameContext(canvas);
     }
 
     private void drawGameContext(Canvas canvas) {
