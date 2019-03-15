@@ -23,6 +23,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import helloandroid.m2dl.photosnap.delegates.GameDelegate;
 import helloandroid.m2dl.photosnap.helpers.GameContextBuilder;
 import helloandroid.m2dl.photosnap.views.GameView;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
-    private Bitmap bitmap;
+    private static List<Integer[]> obstaclePicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,16 +89,17 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            bitmap = convertBitmap(imageBitmap);
+            convertBitmap(imageBitmap);
             imageView.setImageBitmap(imageBitmap);
         }
     }
 
-    public static Bitmap convertBitmap(Bitmap src){
+    public static void convertBitmap(Bitmap src){
         int width = src.getWidth();
         int height = src.getHeight();
         // create output bitmap
-        Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
+        //Bitmap bmOut = Bitmap.createBitmap(width, height, src.getConfig());
+        obstaclePicture = new ArrayList<>();
         // color information
         int A, R, G, B;
         int pixel;
@@ -110,16 +114,13 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
                 int gray = (int) (0.2989 * R + 0.5870 * G + 0.1140 * B);
                 // use 128 as threshold, above -> white, below -> black
                 if (gray > 115) {
-                    gray = 255;
+                    Integer[] tmp = new Integer[2];
+                    tmp[0] = x;
+                    tmp[1] = y;
+                    obstaclePicture.add(tmp);
                 }
-                else{
-                    gray = 0;
-                }
-                // set new pixel color to output bitmap
-                bmOut.setPixel(x, y, Color.argb(A, gray, gray, gray));
             }
         }
-        return bmOut;
     }
 
     public void onClickListener(View v){
