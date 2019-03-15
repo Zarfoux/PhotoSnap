@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import helloandroid.m2dl.photosnap.Direction;
 import helloandroid.m2dl.photosnap.domain.Ball;
 import helloandroid.m2dl.photosnap.domain.Exit;
 import helloandroid.m2dl.photosnap.domain.GameContext;
@@ -21,6 +22,8 @@ public class GameContextBuilder {
         Random rand = new Random();
 
         Ball ball = new Ball(rand.nextInt(rect.right - 128 - borderWidth * 2) + rect.left + 64 + borderWidth, rand.nextInt(rect.bottom - 128 - borderWidth * 2) + rect.top + 64 + borderWidth, 64);
+        ball.setDir(Direction.NONE);
+        ball.setMoving(false);
         Square square = new Square(128, rand.nextInt(rect.right - 256 - borderWidth * 2) + rect.left + 128 + borderWidth, rand.nextInt(rect.bottom - 256 - borderWidth * 2) + rect.top + 128 + borderWidth);
         Exit exit = new Exit(square);
 

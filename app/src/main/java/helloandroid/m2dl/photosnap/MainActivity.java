@@ -1,5 +1,13 @@
 package helloandroid.m2dl.photosnap;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.hardware.SensorManager;
+import android.os.Handler;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -8,8 +16,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.constraint.ConstraintLayout;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
@@ -22,24 +33,46 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.os.Bundle;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import helloandroid.m2dl.photosnap.delegates.GameDelegate;
 import helloandroid.m2dl.photosnap.helpers.GameContextBuilder;
+import java.util.List;
+
+import helloandroid.m2dl.photosnap.delegate.DataChange;
+import helloandroid.m2dl.photosnap.domain.Ball;
+import helloandroid.m2dl.photosnap.domain.Exit;
+import helloandroid.m2dl.photosnap.domain.GameContext;
+import helloandroid.m2dl.photosnap.domain.Obstacle;
+import helloandroid.m2dl.photosnap.domain.ObstacleBlock;
+import helloandroid.m2dl.photosnap.helpers.Square;
+import helloandroid.m2dl.photosnap.views.GameView;
 import helloandroid.m2dl.photosnap.views.GameView;
 
-public class MainActivity extends AppCompatActivity implements GameDelegate {
+public class MainActivity extends AppCompatActivity  implements DataChange, GameDelegate {
 
-    private GameView gameView;
-    private PopupWindow popWindow;
-
+    private SensorManager sensorManager;
+    private  TextView dir;
     private int width;
     private int height;
+    private GameView gameView;
+
+    private Handler mHandler = new Handler();;
+
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            gameView.invalidate();
+            mHandler.postDelayed(this, 10);
+        }
+    };
 
     private Rect gameViewRect;
-
+    private PopupWindow popWindow;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
     private static List<Integer[]> obstaclePicture;
@@ -75,6 +108,12 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
         onShowPopupMenu(mainView);
 
         imageView = findViewById(R.id.imageView);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        SensorAcceleration capt = new SensorAcceleration(sensorManager,this);
+        sensorManager.registerListener(capt,capt.getSensor(), SensorManager.SENSOR_DELAY_FASTEST);
+
+        mHandler.postDelayed(mUpdateTimeTask,3000);
     }
 
     private void dispatchTakePictureIntent() {
@@ -149,6 +188,20 @@ public class MainActivity extends AppCompatActivity implements GameDelegate {
 
         popWindow.setFocusable(true);
         popWindow.setOutsideTouchable(false);
+    }
+
+    @Override
+    public void dataDidChange(SensorAcceleration capteur, Direction direction) {
+
+        if ( gameView.getGameContext() != null ) {
+            Ball ball = gameView.getGameContext().getBall();
+            //Si la balle ne bouge pas on l'a fait avancer dans la direction du capteur
+           // if (Direction.NONE.equals(ball.getDir())) {
+                ball.setMoving(true);
+                ball.setDir(direction);
+            //}
+        }
+
     }
 
 }
