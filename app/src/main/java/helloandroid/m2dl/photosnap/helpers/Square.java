@@ -5,20 +5,12 @@ import android.graphics.Rect;
 public class Square {
 
     private int sideLength;
-    private int top;
     private int left;
+    private int top;
 
-    public Square(int sideLength, int top, int left) {
+    public Square(int sideLength, int left, int top) {
         this.sideLength = sideLength;
-        this.top = top;
         this.left = left;
-    }
-
-    public int getTop() {
-        return top;
-    }
-
-    public void setTop(int top) {
         this.top = top;
     }
 
@@ -28,6 +20,14 @@ public class Square {
 
     public void setLeft(int left) {
         this.left = left;
+    }
+
+    public int getTop() {
+        return top;
+    }
+
+    public void setTop(int top) {
+        this.top = top;
     }
 
     public int getSideLength() {

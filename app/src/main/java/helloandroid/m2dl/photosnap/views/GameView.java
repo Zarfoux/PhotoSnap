@@ -9,6 +9,7 @@ import android.view.View;
 import java.util.List;
 
 import helloandroid.m2dl.photosnap.Direction;
+import helloandroid.m2dl.photosnap.delegates.GameDelegate;
 import helloandroid.m2dl.photosnap.domain.Ball;
 import helloandroid.m2dl.photosnap.domain.Exit;
 import helloandroid.m2dl.photosnap.domain.GameContext;
@@ -19,6 +20,13 @@ public class GameView extends View {
     private GameContext gameContext;
     private boolean init = true;
     private boolean obstacle = false;
+
+    private GameDelegate delegate;
+
+    private Rect rect;
+
+    private boolean init = true;
+
     public GameContext getGameContext() {
         return gameContext;
     }
@@ -26,6 +34,22 @@ public class GameView extends View {
 
     public void setGameContext(GameContext gameContext) {
         this.gameContext = gameContext;
+    }
+
+    public Rect getRect() {
+        return rect;
+    }
+
+    public void setRect(Rect rect) {
+        this.rect = rect;
+    }
+
+    public GameDelegate getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(GameDelegate delegate) {
+        this.delegate = delegate;
     }
 
     public GameView(Context context) {
@@ -54,8 +78,8 @@ public class GameView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        drawGameContext(canvas);
-
+        if (gameContext != null)
+            drawGameContext(canvas);
     }
 
     private void drawGameContext(Canvas canvas) {
@@ -64,6 +88,7 @@ public class GameView extends View {
         List<Obstacle> obstacles = gameContext.getObstacles();
 
         canvas.drawRect(exit.getRect(), exit.getPaint());
+
 
         for (Obstacle obstacle : obstacles)
             canvas.drawRect(obstacle.getRect(), obstacle.getPaint());
