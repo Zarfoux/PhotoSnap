@@ -98,7 +98,6 @@ public class GameView extends View {
         }
 
 
-
     }
 
     private boolean hitBoard (Ball ball){
@@ -117,26 +116,16 @@ public class GameView extends View {
 
     private  boolean hitObstacles (Ball ball){
 
-        int cercleRight = (int) ((int)ball.getCx()+ball.getRadius());
-        int cercleLeft = (int) ((int)ball.getCx()-ball.getRadius());
-        int cercleTop= (int) ((int)ball.getCy()-ball.getRadius());
-        int cercleBottom = (int) ((int)ball.getCy()+ball.getRadius());
-
-      //  Direction direction = ball.getDir();
-
-
-        Rect rectCircle = new Rect(cercleLeft,cercleTop,cercleRight,cercleBottom);
-
         for ( Obstacle o : gameContext.getObstacles()){
-            if ( Rect.intersects(rectCircle,o.getRect())) {
+            if ( Rect.intersects(ball.rectCollision(),o.getRect())) {
 
                 return  true;
             }
-
         }
-
         return  false;
 
     }
+
+
 
 }

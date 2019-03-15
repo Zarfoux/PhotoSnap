@@ -51,9 +51,13 @@ public class MainActivity extends AppCompatActivity  implements DataChange {
 
 
         ObstacleBlock obstacle = new ObstacleBlock(new Rect(500,400,800,800));
+        ObstacleBlock obstacle2 = new ObstacleBlock(new Rect(0,100,200,800));
+        ObstacleBlock obstacle3 = new ObstacleBlock(new Rect(900,50,1200,800));
         Exit exit = new Exit(new Square(128, 800, 800));
         GameContext gameContext = new GameContext(ball, exit);
         gameContext.getObstacles().add(obstacle);
+        gameContext.getObstacles().add(obstacle2);
+        gameContext.getObstacles().add(obstacle3);
 
         gameView.setGameContext(gameContext);
         gameView.invalidate();
@@ -70,13 +74,13 @@ public class MainActivity extends AppCompatActivity  implements DataChange {
     @Override
     public void dataDidChange(SensorAcceleration capteur, Direction direction) {
 
-        
+
         Ball ball = gameView.getGameContext().getBall();
         //Si la balle ne bouge pas on l'a fait avancer dans la direction du capteur
-        if ( Direction.NONE.equals(ball.getDir()) ) {
+       if ( Direction.NONE.equals(ball.getDir()) ) {
             ball.setMoving(true);
             ball.setDir(direction);
-        }
+       }
 
     }
 }

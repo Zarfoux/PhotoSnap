@@ -1,6 +1,7 @@
 package helloandroid.m2dl.photosnap.domain;
 
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import helloandroid.m2dl.photosnap.Direction;
 import helloandroid.m2dl.photosnap.helpers.Paints;
@@ -86,5 +87,29 @@ public class Ball extends Entity {
 
     public void subToCy( int val){
         this.cy = this.cy - val;
+    }
+
+    public Rect rectCollision (){
+
+        int cercleRight = (int) ((int)getCx()+getRadius());
+        int cercleLeft = (int) ((int)getCx()-getRadius());
+        int cercleTop= (int) ((int)getCy()-getRadius());
+        int cercleBottom = (int) ((int)getCy()+getRadius());
+
+        Direction direction = getDir();
+
+        if ( direction.equals(Direction.BOTTOM)){
+            cercleBottom+=8;
+        } else  if ( direction.equals(Direction.TOP)) {
+            cercleTop-=8;
+        }else  if ( direction.equals(Direction.LEFT)) {
+            cercleLeft -= 8;
+        }else  if ( direction.equals(Direction.RIGHT)) {
+            cercleRight += 8;
+        }
+
+        Rect rectCircle = new Rect(cercleLeft,cercleTop,cercleRight,cercleBottom);
+
+        return rectCircle;
     }
 }
