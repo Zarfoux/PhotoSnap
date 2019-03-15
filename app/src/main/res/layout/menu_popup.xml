@@ -93,6 +93,7 @@
         android:backgroundTint="@color/WelcomeTextColor"
         android:drawableLeft="@android:drawable/ic_menu_camera"
         android:fontFamily="casual"
+        android:onClick="onClickListener"
         android:text=" Begin"
         android:textColor="@android:color/background_light"
         android:textStyle="bold"
