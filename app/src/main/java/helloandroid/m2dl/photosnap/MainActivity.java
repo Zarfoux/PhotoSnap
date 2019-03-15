@@ -192,13 +192,13 @@ public class MainActivity extends AppCompatActivity  implements DataChange, Game
     @Override
     public void dataDidChange(SensorAcceleration capteur, Direction direction) {
 
-        if (gameView.getGameContext() == null ) {
+        if ( gameView.getGameContext() != null ) {
             Ball ball = gameView.getGameContext().getBall();
             //Si la balle ne bouge pas on l'a fait avancer dans la direction du capteur
-            if (Direction.NONE.equals(ball.getDir())) {
+           // if (Direction.NONE.equals(ball.getDir())) {
                 ball.setMoving(true);
                 ball.setDir(direction);
-            }
+            //}
         }
 
     }
