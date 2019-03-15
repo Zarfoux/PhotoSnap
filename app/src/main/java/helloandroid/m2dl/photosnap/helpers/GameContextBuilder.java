@@ -1,11 +1,13 @@
 package helloandroid.m2dl.photosnap.helpers;
 
+import android.graphics.Path;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import helloandroid.m2dl.photosnap.Direction;
 import helloandroid.m2dl.photosnap.domain.Ball;
 import helloandroid.m2dl.photosnap.domain.Exit;
 import helloandroid.m2dl.photosnap.domain.GameContext;
@@ -21,6 +23,8 @@ public class GameContextBuilder {
         Random rand = new Random();
 
         Ball ball = new Ball(rand.nextInt(rect.right - 128 - borderWidth * 2) + rect.left + 64 + borderWidth, rand.nextInt(300) + rect.top + borderWidth + 64, 64);
+        ball.setDir(Path.Direction.NONE);
+        ball.setMoving(false);
         Square square = new Square(128, rand.nextInt(rect.right - 256 - borderWidth * 2) + rect.left + 128 + borderWidth, rect.bottom - rand.nextInt(236) - borderWidth - 128);
         Exit exit = new Exit(square);
 

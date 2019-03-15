@@ -8,11 +8,13 @@ import android.view.View;
 
 import java.util.List;
 
+import helloandroid.m2dl.photosnap.Direction;
 import helloandroid.m2dl.photosnap.delegates.GameDelegate;
 import helloandroid.m2dl.photosnap.domain.Ball;
 import helloandroid.m2dl.photosnap.domain.Exit;
 import helloandroid.m2dl.photosnap.domain.GameContext;
 import helloandroid.m2dl.photosnap.domain.Obstacle;
+import helloandroid.m2dl.photosnap.domain.ObstacleBlock;
 
 public class GameView extends View {
 
@@ -21,8 +23,6 @@ public class GameView extends View {
     private GameDelegate delegate;
 
     private Rect rect;
-
-    private boolean init = true;
 
     public GameContext getGameContext() {
         return gameContext;
@@ -85,11 +85,66 @@ public class GameView extends View {
 
         canvas.drawRect(exit.getRect(), exit.getPaint());
 
-        canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
 
-        for (Obstacle obstacle : obstacles) {
+        for (Obstacle obstacle : obstacles)
             canvas.drawRect(obstacle.getRect(), obstacle.getPaint());
+
+        //Si la balle bouge on avance
+        if (ball.isMoving()) {
+            Direction direction = ball.getDir();
+            //si elle touche pas de mur
+            //boolean a = hitBoard(ball);
+            boolean b = hitObstacles(ball);
+
+            if (!hitObstacles(ball)) {
+
+                if (Direction.TOP.equals(direction)) {
+                    ball.subToCy(8);
+                } else if (Direction.BOTTOM.equals(direction)) {
+                    ball.addToCy(8);
+                } else if (Direction.RIGHT.equals(direction)) {
+                    ball.addToCx(8);
+                } else if (Direction.LEFT.equals(direction)) {
+                    ball.subToCx(8);
+                }
+                canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
+            } else if (inExit(ball)) {
+
+
+            } else {
+
+                canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
+                ball.setMoving(false);
+                ball.setDir(Direction.NONE);
+            }
+
+        } else if (!ball.isMoving()) {
+            canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
         }
+
+
+    }
+
+    private boolean hitObstacles(Ball ball) {
+
+        for (Obstacle o : gameContext.getObstacles()) {
+            if (o instanceof ObstacleBlock) {
+                if (Rect.intersects(ball.rectCollision(), o.getRect())) {
+                    return true;
+                }
+            } else {
+                //Perdu
+            }
+        }
+        return false;
+    }
+
+    private boolean inExit(Ball ball) {
+
+        if (Rect.intersects(ball.rectCollision(), gameContext.getExit().getRect())) {
+            return true;
+        }
+        return  false;
     }
 
 }
