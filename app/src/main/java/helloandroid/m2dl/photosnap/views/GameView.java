@@ -14,6 +14,7 @@ import helloandroid.m2dl.photosnap.domain.Ball;
 import helloandroid.m2dl.photosnap.domain.Exit;
 import helloandroid.m2dl.photosnap.domain.GameContext;
 import helloandroid.m2dl.photosnap.domain.Obstacle;
+import helloandroid.m2dl.photosnap.domain.ObstacleBlock;
 
 public class GameView extends View {
 
@@ -25,7 +26,7 @@ public class GameView extends View {
 
     private Rect rect;
 
-    private boolean init = true;
+
 
     public GameContext getGameContext() {
         return gameContext;
@@ -94,13 +95,13 @@ public class GameView extends View {
             canvas.drawRect(obstacle.getRect(), obstacle.getPaint());
 
         //Si la balle bouge on avance
-        if ( ball.isMoving()) {
+        if (ball.isMoving()) {
             Direction direction = ball.getDir();
             //si elle touche pas de mur
             //boolean a = hitBoard(ball);
-            boolean b= hitObstacles(ball);
+            boolean b = hitObstacles(ball);
 
-            if ( !hitObstacles(ball)) {
+            if (!hitObstacles(ball)) {
 
                 if (Direction.TOP.equals(direction)) {
                     ball.subToCy(8);
@@ -112,45 +113,57 @@ public class GameView extends View {
                     ball.subToCx(8);
                 }
                 canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
+            } else if (inExit(ball)) {
+
+
             } else {
+
                 canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
                 ball.setMoving(false);
                 ball.setDir(Direction.NONE);
             }
 
-        }else if( !ball.isMoving() ){
+        } else if (!ball.isMoving()) {
             canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
         }
 
 
     }
 
-    private boolean hitBoard (Ball ball){
+    private boolean hitBoard(Ball ball) {
 
-        int cercleRight = (int) ((int)ball.getCx()+ball.getRadius());
-        int cercleLeft = (int) ((int)ball.getCx()-ball.getRadius());
-        int cercleTop= (int) ((int)ball.getCy()-ball.getRadius());
-        int cercleBottom = (int) ((int)ball.getCy()+ball.getRadius());
+        int cercleRight = (int) ((int) ball.getCx() + ball.getRadius());
+        int cercleLeft = (int) ((int) ball.getCx() - ball.getRadius());
+        int cercleTop = (int) ((int) ball.getCy() - ball.getRadius());
+        int cercleBottom = (int) ((int) ball.getCy() + ball.getRadius());
 
-        Rect rectCircle = new Rect(cercleLeft,cercleTop,cercleRight,cercleBottom);
+        Rect rectCircle = new Rect(cercleLeft, cercleTop, cercleRight, cercleBottom);
 
-        return  ( cercleRight > getRight()  || cercleTop > getTop()
-                ||  cercleBottom >getBottom()+5 ||  cercleLeft > getLeft());
+        return (cercleRight > getRight() || cercleTop > getTop()
+                || cercleBottom > getBottom() + 5 || cercleLeft > getLeft());
 
     }
 
-    private  boolean hitObstacles (Ball ball){
+    private boolean hitObstacles(Ball ball) {
 
-        for ( Obstacle o : gameContext.getObstacles()){
-            if ( Rect.intersects(ball.rectCollision(),o.getRect())) {
-
-                return  true;
+        for (Obstacle o : gameContext.getObstacles()) {
+            if (o instanceof ObstacleBlock) {
+                if (Rect.intersects(ball.rectCollision(), o.getRect())) {
+                    return true;
+                }
+            } else {
+                //Perdu
             }
         }
-        return  false;
-
+        return false;
     }
 
+    private boolean inExit(Ball ball) {
 
+        if (Rect.intersects(ball.rectCollision(), gameContext.getExit().getRect())) {
+            return true;
+        }
+        return  false;
+    }
 
 }

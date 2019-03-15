@@ -46,7 +46,7 @@ import helloandroid.m2dl.photosnap.helpers.Square;
 import helloandroid.m2dl.photosnap.views.GameView;
 import helloandroid.m2dl.photosnap.views.GameView;
 
-public class MainActivity extends AppCompatActivity  implements DataChange,GameDelagate {
+public class MainActivity extends AppCompatActivity  implements DataChange, GameDelegate {
 
     private SensorManager sensorManager;
     private  TextView dir;
@@ -182,12 +182,13 @@ public class MainActivity extends AppCompatActivity  implements DataChange,GameD
     @Override
     public void dataDidChange(SensorAcceleration capteur, Direction direction) {
 
-
-        Ball ball = gameView.getGameContext().getBall();
-        //Si la balle ne bouge pas on l'a fait avancer dans la direction du capteur
-        if ( Direction.NONE.equals(ball.getDir()) ) {
-            ball.setMoving(true);
-            ball.setDir(direction);
+        if (gameView.getGameContext() == null ) {
+            Ball ball = gameView.getGameContext().getBall();
+            //Si la balle ne bouge pas on l'a fait avancer dans la direction du capteur
+            if (Direction.NONE.equals(ball.getDir())) {
+                ball.setMoving(true);
+                ball.setDir(direction);
+            }
         }
 
     }
