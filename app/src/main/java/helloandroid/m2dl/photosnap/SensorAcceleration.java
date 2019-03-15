@@ -6,7 +6,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import helloandroid.m2dl.photosnap.delegate.DataChange;
 
-public class CapteurAcceleration implements SensorEventListener {
+public class SensorAcceleration implements SensorEventListener {
 
     protected SensorManager sm;
     protected Sensor sensor;
@@ -15,13 +15,13 @@ public class CapteurAcceleration implements SensorEventListener {
     protected int x ;
     protected int y;
 
-    public CapteurAcceleration(SensorManager sm, DataChange delegate) {
+    public SensorAcceleration(SensorManager sm, DataChange delegate) {
         this.sm = sm;
         this.delegate = delegate;
         this.sensor = this.sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
-    
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         float[] values = event.values;

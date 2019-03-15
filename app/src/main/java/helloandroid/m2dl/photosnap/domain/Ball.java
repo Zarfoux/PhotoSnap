@@ -2,14 +2,29 @@ package helloandroid.m2dl.photosnap.domain;
 
 import android.graphics.Paint;
 
+import helloandroid.m2dl.photosnap.Direction;
 import helloandroid.m2dl.photosnap.helpers.Paints;
 
 public class Ball extends Entity {
 
     private float cx;
     private float cy;
-
+    private Direction dir ;
+    private boolean moving = false;
     private float radius;
+
+
+
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+
 
     public Ball(float cx, float cy, float radius) {
         super(Paints.getDefaultBallPaint());
@@ -49,4 +64,27 @@ public class Ball extends Entity {
         this.radius = radius;
     }
 
+    public Direction getDir() {
+        return dir;
+    }
+
+    public void setDir(Direction dir) {
+        this.dir = dir;
+    }
+
+    public void addToCx( int val){
+        this.cx = this.cx + val;
+    }
+
+    public void subToCx (int val){
+        this.cx = this.cx - val;
+    }
+
+    public void addToCy( int val){
+        this.cy = this.cy + val;
+    }
+
+    public void subToCy( int val){
+        this.cy = this.cy - val;
+    }
 }
