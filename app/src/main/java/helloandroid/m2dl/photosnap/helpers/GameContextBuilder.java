@@ -23,7 +23,7 @@ public class GameContextBuilder {
         Random rand = new Random();
 
         Ball ball = new Ball(rand.nextInt(rect.right - 128 - borderWidth * 2) + rect.left + 64 + borderWidth, rand.nextInt(300) + rect.top + borderWidth + 64, 64);
-        ball.setDir(Path.Direction.NONE);
+        ball.setDir(Direction.NONE);
         ball.setMoving(false);
         Square square = new Square(128, rand.nextInt(rect.right - 256 - borderWidth * 2) + rect.left + 128 + borderWidth, rect.bottom - rand.nextInt(236) - borderWidth - 128);
         Exit exit = new Exit(square);
@@ -37,6 +37,10 @@ public class GameContextBuilder {
 
         switch (borderType) {
             case 0:
+                obstacles.add(new ObstacleBlock(topBorder));
+                obstacles.add(new ObstacleBlock(leftBorder));
+                obstacles.add(new ObstacleBlock(rightBorder));
+                obstacles.add(new ObstacleBlock(bottomBorder));
                 break;
             case 1:
                 obstacles.add(new ObstacleBlock(topBorder));

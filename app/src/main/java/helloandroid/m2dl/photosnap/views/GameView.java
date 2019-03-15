@@ -15,6 +15,7 @@ import helloandroid.m2dl.photosnap.domain.Exit;
 import helloandroid.m2dl.photosnap.domain.GameContext;
 import helloandroid.m2dl.photosnap.domain.Obstacle;
 import helloandroid.m2dl.photosnap.domain.ObstacleBlock;
+import helloandroid.m2dl.photosnap.domain.ObstacleDeath;
 
 public class GameView extends View {
 
@@ -108,16 +109,15 @@ public class GameView extends View {
                     ball.subToCx(8);
                 }
                 canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
-            } else if (inExit(ball)) {
 
-
+                if (inExit(ball)) {
+                    delegate.onWin(gameContext);
+                }
             } else {
-
                 canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
                 ball.setMoving(false);
                 ball.setDir(Direction.NONE);
             }
-
         } else if (!ball.isMoving()) {
             canvas.drawCircle(ball.getCx(), ball.getCy(), ball.getRadius(), ball.getPaint());
         }
@@ -126,21 +126,22 @@ public class GameView extends View {
     }
 
     private boolean hitObstacles(Ball ball) {
-
         for (Obstacle o : gameContext.getObstacles()) {
             if (o instanceof ObstacleBlock) {
                 if (Rect.intersects(ball.rectCollision(), o.getRect())) {
                     return true;
                 }
-            } else {
-                //Perdu
+            } else if (o instanceof ObstacleDeath){
+                if (Rect.intersects(ball.rectCollision(), o.getRect())) {
+                    delegate.onLose(gameContext);
+                    return true;
+                }
             }
         }
         return false;
     }
 
     private boolean inExit(Ball ball) {
-
         if (Rect.intersects(ball.rectCollision(), gameContext.getExit().getRect())) {
             return true;
         }
