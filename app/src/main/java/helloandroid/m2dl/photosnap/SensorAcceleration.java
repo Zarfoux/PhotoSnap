@@ -21,9 +21,7 @@ public class CapteurAcceleration implements SensorEventListener {
         this.sensor = this.sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
-
-
-
+    
     @Override
     public void onSensorChanged(SensorEvent event) {
         float[] values = event.values;
