@@ -13,9 +13,14 @@ public class MainActivity extends AppCompatActivity  implements DataChange {
     private SensorManager sensorManager;
     private  TextView dir;
 
+    private GameView gameView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        gameView = findViewById(R.id.game_view);
+
         setContentView(R.layout.activity_main);
 
 

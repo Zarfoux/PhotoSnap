@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 public class ExampleInstrumentedTest {
     @Test
     public void useAppContext() {
-        // Context of the app under test.
+        // GameContext of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("helloandroid.m2dl.photosnap", appContext.getPackageName());
