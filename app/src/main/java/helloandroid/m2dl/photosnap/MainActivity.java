@@ -1,13 +1,17 @@
 package helloandroid.m2dl.photosnap;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.Gravity;
@@ -111,9 +115,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickListener(View v){
-        popWindow.dismiss();
-        popWindow = null;
-        dispatchTakePictureIntent();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+        } else {
+            popWindow.dismiss();
+            popWindow = null;
+            dispatchTakePictureIntent();
+        }
     }
 
 
