@@ -6,6 +6,10 @@ public abstract class Entity {
 
     private Paint paint;
 
+    Entity(Paint paint) {
+        this.paint = paint;
+    }
+
     public Paint getPaint() {
         return paint;
     }
