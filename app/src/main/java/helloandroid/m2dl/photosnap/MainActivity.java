@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.constraint.ConstraintLayout;
@@ -17,22 +19,23 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 
-import helloandroid.m2dl.photosnap.domain.Ball;
-import helloandroid.m2dl.photosnap.domain.Exit;
-import helloandroid.m2dl.photosnap.domain.GameContext;
-import helloandroid.m2dl.photosnap.helpers.Square;
+import helloandroid.m2dl.photosnap.delegates.GameDelegate;
+import helloandroid.m2dl.photosnap.helpers.GameContextBuilder;
 import helloandroid.m2dl.photosnap.views.GameView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GameDelegate {
 
     private GameView gameView;
     private PopupWindow popWindow;
 
     private int width;
     private int height;
+
+    private Rect gameViewRect;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private ImageView imageView;
@@ -54,12 +57,17 @@ public class MainActivity extends AppCompatActivity {
 
         gameView = findViewById(R.id.game_view);
 
-        Ball ball = new Ball(128, 128, 64);
-        Exit exit = new Exit(new Square(128, gameView.getTop(), 800));
-        GameContext gameContext = new GameContext(ball, exit);
+        gameView.setDelegate(this);
 
-        gameView.setGameContext(gameContext);
-        gameView.invalidate();
+        gameView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                gameView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                gameViewRect = new Rect(gameView.getLeft(), gameView.getTop(), gameView.getRight(), gameView.getBottom());
+                gameView.setGameContext(GameContextBuilder.buildGameContext(gameViewRect, 1,1));
+                gameView.invalidate();
+            }
+        });
 
         onShowPopupMenu(mainView);
 
@@ -124,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
             dispatchTakePictureIntent();
         }
     }
-
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
